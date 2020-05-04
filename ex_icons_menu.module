@@ -1,0 +1,26 @@
+<?php
+
+/**
+ * @file
+ * Extends the External-use Icons module for Drupal menu items.
+ */
+
+use Drupal\Core\Entity\EntityTypeInterface;
+use Drupal\Core\Field\BaseFieldDefinition;
+
+/**
+ * Implements hook_entity_base_field_info().
+ */
+function ex_icons_menu_entity_base_field_info(EntityTypeInterface $entity_type) {
+  $fields = [];
+
+  if ($entity_type->id() == 'menu_link_content') {
+    $fields['ex_icons_menu_icon'] = BaseFieldDefinition::create('ex_icon')
+      ->setSetting('title', DRUPAL_DISABLED)
+      ->setLabel(t('Icon'))
+      ->setDescription(t('The icon that represents this menu item.'))
+      ->setDisplayOptions('form', ['weight' => -4]);
+  }
+
+  return $fields;
+}

@@ -1,0 +1,6 @@
+services:
+  ex_icons_menu.link_tree:
+    class: Drupal\ex_icons_menu\Menu\MenuLinkTree
+    decorates: menu.link_tree
+    arguments: ['@ex_icons_menu.link_tree.inner', '@entity_type.manager', '@entity.repository']
+    public: false

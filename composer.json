@@ -1,0 +1,9 @@
+{
+    "name": "projectcosmic/ex_icons_menu",
+    "description": "Extends the External-use Icons into Drupal menu items.",
+    "type": "drupal-module",
+    "require": {
+        "drupal/core": "^8 || ^9",
+        "drupal/ex_icons": "^1.0@RC"
+    }
+}

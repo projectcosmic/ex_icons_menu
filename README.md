@@ -2,7 +2,8 @@ INTRODUCTION
 ------------
 
 Extends the [External-use Icons](https://www.drupal.org/project/ex_icons) into
-Drupal menu items, allowing an icon selection for menu links.
+Drupal menu items, allowing an icon selection for top-level menu links or chosen
+menus.
 
 Note: this module does not display any of the icons selected. It is up to the
 theme to display the icons as required.
@@ -30,8 +31,8 @@ INSTALLATION
 CONFIGURATION
 -------------
 
-To select icons for custom menu links:
+To enable icon selection for top-level menu links for a menu:
 
-1. Edit a custom menu item.
-3. Select an icon from the icon selection widget that appears.
-4. Repeat for any more menu items as required.
+1. Go to the edit form of the menu (Structure → Menus → _Your Menu_)
+2. Check _Enable icon selection_ checkbox
+3. Hit _Save_

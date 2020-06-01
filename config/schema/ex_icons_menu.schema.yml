@@ -1,0 +1,8 @@
+# Schema for the configuration of the Icon field type and associated plugins.
+
+system.menu.*.third_party.ex_icons_menu:
+  type: mapping
+  mapping:
+    enabled:
+      type: boolean
+      label: 'Enable icon selection'

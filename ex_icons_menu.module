@@ -7,6 +7,7 @@
 
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Field\BaseFieldDefinition;
+use Drupal\Core\Form\FormStateInterface;
 
 /**
  * Implements hook_entity_base_field_info().
@@ -23,4 +24,44 @@ function ex_icons_menu_entity_base_field_info(EntityTypeInterface $entity_type) 
   }
 
   return $fields;
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function ex_icons_menu_form_menu_form_alter(&$form, FormStateInterface $form_state) {
+  if (\Drupal::moduleHandler()->moduleExists('menu_link_content')) {
+    /** @var \Drupal\system\MenuInterface $menu */
+    $menu = $form_state->getFormObject()->getEntity();
+
+    $form['third_party_settings']['#tree'] = TRUE;
+    $form['third_party_settings']['ex_icons_menu']['enabled'] = [
+      '#type' => 'checkbox',
+      '#title' => t('Enable icon selection'),
+      '#description' => t('Allow icons to be selectable for top-level menu items of this menu.'),
+      '#default_value' => $menu->getThirdPartySetting('ex_icons_menu', 'enabled', FALSE),
+    ];
+  }
+}
+
+/**
+ * Implements hook_form_BASE_FORM_ID_alter() for menu_link_content_form.
+ */
+function ex_icons_menu_form_menu_link_content_form_alter(&$form) {
+  /** @var \Drupal\system\MenuInterface[] $menus */
+  $menus = \Drupal::entityTypeManager()
+    ->getStorage('menu')
+    ->loadMultiple();
+
+  // Build the list of values that will display the ex_icon menu icon field.
+  $states = [];
+  foreach ($menus as $menu) {
+    if ($menu->getThirdPartySetting('ex_icons_menu', 'enabled', FALSE)) {
+      $states[] = 'or';
+      $states[] = ['value' => $menu->id() . ':'];
+    }
+  }
+
+  // Show icon field when an icon menu is selected.
+  $form['ex_icons_menu_icon']['#states']['visible'] = [':input[name="menu_parent"]' => $states];
 }

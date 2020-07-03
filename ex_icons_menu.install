@@ -1,0 +1,60 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for the Ext. Icons Menu module.
+ */
+
+use Drupal\Core\Field\BaseFieldDefinition;
+
+/**
+ * Update custom menu link icon field definition to drupal.org ex_icon version.
+ */
+function ex_icons_menu_update_8101() {
+  $entity_type_manager = \Drupal::entityTypeManager();
+  $database = \Drupal::database();
+  $definition_manager = \Drupal::entityDefinitionUpdateManager();
+
+  $table = $entity_type_manager
+    ->getStorage('menu_link_content')
+    ->getDataTable();
+  $id_column = $entity_type_manager
+    ->getDefinition('menu_link_content')
+    ->getKey('id');
+
+  // Store the existing values.
+  $values = $database
+    ->select($table, 't')
+    ->fields('t', [$id_column, 'ex_icons_menu_icon__value'])
+    ->execute()
+    ->fetchAllKeyed();
+
+  // Uninstall the field.
+  $field_definition = $definition_manager->getFieldStorageDefinition(
+    'ex_icons_menu_icon',
+    'menu_link_content'
+  );
+  $definition_manager->uninstallFieldStorageDefinition($field_definition);
+
+  // Recreate a new field definition.
+  $new_field = BaseFieldDefinition::create('ex_icon')
+    ->setSetting('title', DRUPAL_DISABLED)
+    ->setLabel(t('Icon'))
+    ->setDescription(t('The icon that represents this menu item.'))
+    ->setDisplayOptions('form', ['weight' => -4]);
+
+  // Install the new definition.
+  $definition_manager->installFieldStorageDefinition(
+    'ex_icons_menu_icon',
+    'menu_link_content',
+    'menu_link_content',
+    $new_field
+  );
+
+  foreach (array_filter($values) as $id => $value) {
+    $database->update($table)
+      ->fields(['ex_icons_menu_icon__value' => $value])
+      ->condition($id_column, $id)
+      ->execute();
+  }
+}

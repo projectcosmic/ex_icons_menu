@@ -41,6 +41,7 @@ function ex_icons_menu_form_menu_form_alter(&$form, FormStateInterface $form_sta
       '#description' => t('Allow icons to be selectable for top-level menu items of this menu.'),
       '#default_value' => $menu->getThirdPartySetting('ex_icons_menu', 'enabled', FALSE),
     ];
+    $form['third_party_settings']['ex_icons_menu']['#access'] = \Drupal::currentUser()->hasPermission('administer ex_icons_menu configuration');
   }
 }
 
